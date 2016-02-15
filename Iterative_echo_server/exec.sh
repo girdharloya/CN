@@ -11,3 +11,7 @@ sleep 1
 gnome-terminal -e "bash -c \" ./client 127.0.0.1; exec bash\""
 
 exit
+/*
+usage :
+-----
+bash exec.sh in the command line */
