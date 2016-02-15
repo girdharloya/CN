@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<netinet/in.h>
+#include<arpa/inet.h>
+#include<unistd.h>
+#include<string.h>
+
+#define s_port 3000
+#define MAX_LEN 2048
+#define Max_Clients
+
+using namespace std;
+
+int main(int argc,char **argv){
+
+struct sockaddr_in serv_addr;
+
+char snd[MAX_LEN],rcv[MAX_LEN];
+int sfd = socket(AF_INET,SOCK_STREAM,0);
+
+// setting socket address
+memset(&serv_addr,0,sizeof(serv_addr));
+serv_addr.sin_family = AF_INET;
+serv_addr.sin_addr.s_addr = inet_addr(argv[1]);
+serv_addr.sin_port = htons(s_port);
+
+// connecting client to the server
+connect(sfd,(struct sockaddr*)&serv_addr,sizeof(serv_addr));
+
+while(1){
+fgets(snd,MAX_LEN,stdin);
+send(sfd,snd,MAX_LEN,0);
+if(recv(sfd,rcv,MAX_LEN,0)>0)
+cout<<"The Message sent by the server is "<<rcv<<"\n";
+}
+}
