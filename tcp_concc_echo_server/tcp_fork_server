@@ -1,0 +1,59 @@
+#include<bits/stdc++.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<netinet/in.h>
+#include<arpa/inet.h>
+#include<unistd.h>
+#include<string.h>
+
+#define s_port 3000
+#define MAX_LEN 2048
+#define Max_Clients 10
+
+using namespace std;
+
+int main(){
+
+struct sockaddr_in serv_addr,clie_addr;
+
+int sfd = socket(AF_INET,SOCK_STREAM,0);
+
+// socket for the server
+serv_addr.sin_family = AF_INET;
+serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+serv_addr.sin_port = htons(s_port);
+
+// bind the socket to the sfd
+bind(sfd,(struct sockaddr*)&serv_addr,sizeof(serv_addr));
+
+// listen to any of the clients call
+listen(sfd,Max_Clients);
+
+cout<<"Server Ready .. Waiting On Client\n";
+while(1){
+socklen_t clie_len = sizeof(clie_addr);
+char buf[MAX_LEN];
+int nsfd = accept(sfd,(struct sockaddr*)&clie_addr,&clie_len);
+cout<<"Request Recieved\n";
+int pid = fork();
+if(pid>0){
+// in parent process 
+close(nsfd);
+//cout<<"Message transfer done\n";
+}else{// in child process
+while(1){
+close(sfd);
+recv(nsfd,buf,MAX_LEN,0);
+cout<<"Message sent from the client is "<<buf<<"\n";
+send(nsfd,buf,MAX_LEN,0);
+}
+}
+}
+}
+
+
+
+
+
